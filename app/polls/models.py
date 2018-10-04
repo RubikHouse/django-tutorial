@@ -18,8 +18,8 @@ class Question(models.Model):
         자신의 게시일자 >= 지금 - 1일
         :return:
         """
-
-        return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
+        now = timezone.now()
+        return now - datetime.timedelta(days=1) <= self.pub_date <= now
 
 
 class Choice(models.Model):
