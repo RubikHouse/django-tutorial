@@ -1,0 +1,10 @@
+<!--Template에서는 전달받은 Question 인스턴스에 속하는 Choice 목록을 순회하며 보여줌-->
+<!--각 Choice 아이템들의 'choice_text' 및 'votes' 속성값도 같이 출력-->
+<ul>
+{% for choice in question.choice_set.all %}
+    <li>{{ choice.choice_text }}: {{ choice.votes }}</li>
+{% endfor %}
+</ul>
+
+<a href="{% url 'polls:detail' question.id %}">Vote again?</a>
+<a href="{% url 'polls:index' %}">Return index</a>
