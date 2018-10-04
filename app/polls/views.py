@@ -1,8 +1,9 @@
 from django.http import HttpResponse, Http404
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.template import loader
+from django.urls import reverse
 
-from .models import Question
+from .models import Question, Choice
 
 
 def detail(request, question_id):
@@ -15,7 +16,21 @@ def results(request, question_id):
 
 
 def vote(request, question_id):
-    return HttpResponse("You're voting on question %s." % question_id)
+    # question_id가 pk인 Question 객체를 DB로부터 가져온 데이터로 생
+    question = get_object_or_404(Question, pk=question_id)
+    try:
+        selected_choice = question.choice_set.get(pk=request.POST['choice'])
+    except (KeyError, Choice.DoesNotExist):
+        context = {
+            'question': question,
+            'error_message': "You didn't select a choice.",
+        }
+        return render(request, 'polls/detail.html', context)
+    else:
+        selected_choice.votes += 1
+        selected_choice.save()
+
+        return redirect('polls:results', question.id)
 
 
 def index(request):
